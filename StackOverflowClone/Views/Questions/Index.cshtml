@@ -1,0 +1,106 @@
+﻿@* @model IEnumerable<StackOverflowClone.Models.Question>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+
+<p class="d-flex justify-content-end">
+    <a asp-action="Create" class="btn btn-primary">Add Question</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Body)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PostedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PostedDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Body)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PostedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PostedDate)
+            </td>
+            <td>
+                   
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+ *@
+
+
+
+@model IEnumerable<StackOverflowClone.Models.Question>
+
+@{
+    ViewData["Title"] = "Questions";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">All Questions</h2>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark sticky-top">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Title)</th>
+                    <th>@Html.DisplayNameFor(model => model.Body)</th>
+                    <th>@Html.DisplayNameFor(model => model.PostedBy)</th>
+                    <th>@Html.DisplayNameFor(model => model.PostedDate)</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@Html.DisplayFor(modelItem => item.Title)</td>
+                        <td>
+                            <span title="@item.Body">
+                                @((item.Body?.Length > 100) ? item.Body.Substring(0, 100) + "..." : item.Body)
+                            </span>
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.PostedBy)</td>
+                        <td>@item.PostedDate.ToString("dd MMM yyyy")</td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Details</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="d-flex justify-content-lg-start">
+        <a asp-action="Create" class="btn btn-primary"> Ask Question</a>
+    </div>
+</div>

@@ -1,0 +1,111 @@
+﻿@model StackOverflowClone.Models.Answer
+
+@{
+    ViewData["Title"] = "Answer Question";
+    var question = ViewBag.Question as StackOverflowClone.Models.Question;
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-md-12">
+
+            <h1 class="mb-4 fw-bold text-dark">Answer Question</h1>
+
+            <!-- Question -->
+            @if (question != null)
+            {
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body">
+                        <h3 class="fw-semibold mb-3">@question.Title</h3>
+                        <p class="text-secondary fs-5">@question.Body</p>
+                        <div class="text-muted small">
+                            Asked by <strong>@question.PostedBy</strong>
+                            on @question.PostedDate.ToString("MMMM dd, yyyy hh:mm tt")
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Answers -->
+            @if (question != null && question.Answers != null && question.Answers.Count > 0)
+            {
+                <div class="mb-4">
+                    <h4 class="fw-semibold mb-3 text-dark">Answers</h4>
+                    @foreach (var answer in question.Answers.OrderByDescending(a => a.PostedDate))
+                    {
+                        <div class="card border-0 border-start border-4 border-primary shadow-sm mb-3">
+                            <div class="card-body">
+                                <p class="fs-5 mb-2">@Html.Raw(answer.Body)</p>
+                                <div class="text-muted small">
+                                    Answered by <strong>@answer.PostedBy</strong>
+                                    on @answer.PostedDate.ToString("MMMM dd, yyyy hh:mm tt")
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">No answers yet. Be the first to answer!</div>
+            }
+
+            <hr class="my-4" />
+
+            <!-- Answer Form -->
+            <div class="card shadow border-0">
+                <div class="card-body">
+                    <h4 class="fw-semibold mb-3">Your Answer</h4>
+                    <form asp-action="Create" asp-route-qId="@Model.QuestionId" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="QuestionId" />
+
+                        <!-- Rich Text Editor -->
+                        <div class="mb-3">
+                            <label asp-for="Body" class="form-label fw-semibold">Answer</label>
+                            <textarea asp-for="Body" class="form-control" rows="10" id="answerEditor"></textarea>
+                            <span asp-validation-for="Body" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PostedBy" class="form-label fw-semibold">Your Name</label>
+                            <input asp-for="PostedBy" class="form-control" placeholder="Enter your name" />
+                            <span asp-validation-for="PostedBy" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary fw-semibold px-4 py-2">
+                            Post Your Answer
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @* Bootstrap Icons & Validation *@
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @* TinyMCE (Free CDN) *@
+    <script src="https://cdn.tiny.cloud/1/eqkvowi4drs5puti2r0vam7z2f4zik6zjp701t8cid0jmooc/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <script>
+        tinymce.init({
+            selector: '#answerEditor',
+            height: 350,
+            menubar: false,
+            plugins: 'advlist autolink lists link image charmap preview anchor code codesample',
+            toolbar: 'undo redo | bold italic underline | bullist numlist | link image codesample | code preview',
+            branding: false,
+            images_upload_url: "image=R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7", // Example public image API
+            automatic_uploads: false,
+            placeholder: "Write your detailed answer here...",
+            content_style: "body { font-family:Arial,Helvetica,sans-serif; font-size:16px; }"
+        });
+    </script>
+}
